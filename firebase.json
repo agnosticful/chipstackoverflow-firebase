@@ -4,8 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "source": "./",
-    "predeploy": "npm run build-functions"
+    "source": "./"
   },
   "storage": {
     "rules": "storage.rules"
