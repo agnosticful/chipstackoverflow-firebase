@@ -37,12 +37,17 @@ jobs:
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    needs:
+      - dry-compile
+      - test
+      - dry-build
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
           node-version: "10.x"
       - run: npm ci
+      - run: npm run build
       - run: npx --no-install firebase deploy --only functions,firestore,storage
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
