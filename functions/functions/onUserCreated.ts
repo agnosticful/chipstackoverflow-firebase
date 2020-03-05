@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase-admin";
-import functions = require("firebase-functions");
+import * as functions from "firebase-functions";
 import nanoid = require("nanoid");
 import fetch from "node-fetch";
 import sanitizeUserProfileImage from "../utilities/sanitizeUserProfileImage";
