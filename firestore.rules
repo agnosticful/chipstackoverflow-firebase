@@ -4,8 +4,20 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+    // create and delete should be controlled by functions
+    match /users/{userId} {
+      allow read;
+
+      allow update: if
+        request.auth.uid != null &&
+        request.auth.uid == userId &&
+        request.resource.data.keys().hasAll(["name", "profileImageURL"]) &&
+        request.resource.data.keys().hasOnly(["name", "profileImageURL"]) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() >= 3 &&
+        request.resource.data.name.size() < 32 &&
+        request.resource.data.profileImageURL is string &&
+        request.resource.data.profileImageURL.matches("https://firebasestorage\\.googleapis\\.com/v0/b/chipstackoverflow\\.appspot\\.com/o/user_profile_images%2F" + userId + "\\.png(\\?.+)?");
     }
   }
 }
