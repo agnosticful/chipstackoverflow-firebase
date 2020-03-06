@@ -16,8 +16,7 @@ service cloud.firestore {
         request.resource.data.name is string &&
         request.resource.data.name.size() >= 3 &&
         request.resource.data.name.size() < 32 &&
-        request.resource.data.profileImageURL is string &&
-        request.resource.data.profileImageURL.matches("https://firebasestorage\\.googleapis\\.com/v0/b/chipstackoverflow\\.appspot\\.com/o/user_profile_images%2F" + userId + "\\.png(\\?.+)?");
+        request.resource.data.profileImageURL == resource.data.profileImageURL;
     }
   }
 }
