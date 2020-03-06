@@ -9,7 +9,7 @@ const uid = "jjyiidzgqwcvprff";
 const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("GET /posts/{postId}/answers/{answerId}", () => {
-  it("is allowed in anyway", async () => {
+  it("is allowed to get an answer in anyway", async () => {
     await expect(
       assertSucceeds(
         app
@@ -25,7 +25,7 @@ describe("GET /posts/{postId}/answers/{answerId}", () => {
 });
 
 describe("LIST /posts/{postId}/answers/{answerId}", () => {
-  it("is allowed in anyway", async () => {
+  it("is allowed to get answers in anyway", async () => {
     await expect(
       assertSucceeds(
         app
@@ -53,7 +53,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
     await clearFirestoreData({ projectId });
   });
 
-  it("is allowed as long as the data is valid", async () => {
+  it("is allowed to create an answer as long as the data is valid", async () => {
     await expect(
       assertSucceeds(
         postRef.collection("answers").add({
@@ -68,7 +68,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
     ).resolves.toBeDefined();
   });
 
-  it("is disallowed if `post` doesn't point the post (parent)", async () => {
+  it("is disallowed to create an answer that its `post` doesn't point the post (parent)", async () => {
     await expect(
       assertSucceeds(
         postRef.collection("answers").add({
@@ -86,7 +86,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed if `user` doesn't point the request user", async () => {
+  it("is disallowed to create an answer that its `user` doesn't point the request user", async () => {
     await expect(
       assertSucceeds(
         postRef.collection("answers").add({
@@ -104,7 +104,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed if `body` is empty", async () => {
+  it("is disallowed to create an answer with empty body", async () => {
     await expect(
       assertSucceeds(
         postRef.collection("answers").add({
@@ -118,7 +118,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed if `likes` is not zero", async () => {
+  it("is disallowed to create an answer with non-zero `likes`", async () => {
     for (const likes of [-1, 1, 0.01]) {
       await expect(
         assertSucceeds(
@@ -134,7 +134,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
     }
   });
 
-  it("is disallowed if `dislikes` is not zero", async () => {
+  it("is disallowed to create an answer with non-zero `dislikes`", async () => {
     for (const dislikes of [-1, 1, 0.01]) {
       await expect(
         assertSucceeds(
