@@ -5,11 +5,10 @@ import {
   initializeTestApp
 } from "@firebase/testing";
 
-const admin = initializeAdminApp({ projectId: "my-test-project" });
-const app = initializeTestApp({
-  projectId: "my-test-project",
-  auth: { uid: "loremipsum", email: "alice@example.com" }
-});
+const projectId = "qsdfzxikwkvwmihx";
+const uid = "xaivfmsmfkqbeemi";
+const admin = initializeAdminApp({ projectId });
+const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("GET /users/{userId}/reactions/{reactionId}", () => {
   it("is allowed accessing my ones", async () => {
@@ -18,7 +17,7 @@ describe("GET /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .get()
@@ -48,7 +47,7 @@ describe("LIST /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .get()
       )
@@ -95,9 +94,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
   });
 
   afterEach(async () => {
-    await clearFirestoreData({
-      projectId: "my-test-project"
-    });
+    await clearFirestoreData({ projectId });
   });
 
   it("is allowed to create a like for an answer", async () => {
@@ -106,7 +103,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -128,7 +125,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -150,7 +147,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -172,7 +169,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -194,7 +191,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -216,7 +213,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -238,7 +235,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -262,7 +259,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -284,7 +281,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .set({
@@ -330,7 +327,7 @@ describe("DELETE /users/{userId}/reactions/{reactionId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .collection("reactions")
           .doc()
           .delete()
