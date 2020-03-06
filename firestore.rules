@@ -18,6 +18,30 @@ service cloud.firestore {
         request.resource.data.name.size() < 32 &&
         request.resource.data.profileImageURL is string &&
         request.resource.data.profileImageURL.matches("https://firebasestorage\\.googleapis\\.com/v0/b/chipstackoverflow\\.appspot\\.com/o/user_profile_images%2F" + userId + "\\.png(\\?.+)?");
+
+      match /reactions/{reactionId} {
+        allow read: if
+          request.auth.uid != null &&
+          request.auth.uid == userId;
+        
+        allow create: if
+          request.auth.uid != null &&
+          request.auth.uid == userId &&
+          request.resource.data.keys().hasAll(["to", "type"]) &&
+          request.resource.data.keys().hasOnly(["to", "type"]) &&
+          request.resource.data.to is path &&
+          request.resource.data.to[3:4] == /posts &&
+          (
+            request.resource.data.to[5:6] == /answers ||
+            request.resource.data.to[5:6] == /comments
+          ) &&
+          exists(request.resource.data.to) &&
+          request.resource.data.type in ["LIKE", "DISLIKE"];
+
+        allow delete: if
+          request.auth.uid != null &&
+          request.auth.uid == userId;
+      }
     }
   }
 }
