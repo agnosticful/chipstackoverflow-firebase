@@ -18,5 +18,29 @@ service cloud.firestore {
         request.resource.data.name.size() < 32 &&
         request.resource.data.profileImageURL == resource.data.profileImageURL;
     }
+
+    match /posts/{postId} {
+      allow read;
+
+      match /answers/{answerId} {
+        allow read;
+
+        allow create: if
+          request.auth.uid != null &&
+          request.resource.data.keys().hasAll(["post", "user", "body", "likes", "dislikes"]) &&
+          request.resource.data.keys().hasOnly(["post", "user", "body", "likes", "dislikes"]) &&
+          request.resource.data.post is path &&
+          request.resource.data.post == request.path[0:5] &&
+          request.resource.data.user is path &&
+          request.resource.data.user == /databases/$(database)/documents/users/$(request.auth.uid) &&
+          request.resource.data.body is string &&
+          request.resource.data.body.size() >= 8 &&
+          request.resource.data.body.size() < 65536 &&
+          request.resource.data.likes is int &&
+          request.resource.data.likes == 0 &&
+          request.resource.data.dislikes is int &&
+          request.resource.data.dislikes == 0;
+      }
+    }
   }
 }
