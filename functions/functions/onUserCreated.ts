@@ -1,13 +1,12 @@
-import { initializeApp } from "firebase-admin";
 import * as functions from "firebase-functions";
 import nanoid = require("nanoid");
 import fetch from "node-fetch";
 import sanitizeUserProfileImage from "../utilities/sanitizeUserProfileImage";
+import app from "../firebaseAdminApp";
 
 const DISPLAY_NAME_FALLBACK = "noname";
 
 export default functions.auth.user().onCreate(async user => {
-  const app = initializeApp();
   const userDoc = app
     .firestore()
     .collection("users")
