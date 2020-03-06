@@ -11,7 +11,7 @@ const admin = initializeAdminApp({ projectId });
 const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("GET /users/{userId}", () => {
-  it("is allowed accessing myself", async () => {
+  it("is allowed to get my one", async () => {
     await expect(
       assertSucceeds(
         app
@@ -23,7 +23,7 @@ describe("GET /users/{userId}", () => {
     ).resolves.toBeDefined();
   });
 
-  it("is allowed accessing anyone else", async () => {
+  it("is allowed to get anyone's else", async () => {
     await expect(
       assertSucceeds(
         app
@@ -84,7 +84,7 @@ describe("UPDATE /users/{userId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is not allowed to change profileImageURL", async () => {
+  it("is disallowed to change profileImageURL", async () => {
     await expect(
       assertSucceeds(
         app
@@ -100,7 +100,7 @@ describe("UPDATE /users/{userId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is not allowed to update anyone else", async () => {
+  it("is disallowed to update anyone else", async () => {
     await expect(
       assertSucceeds(
         app
