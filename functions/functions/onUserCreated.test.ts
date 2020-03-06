@@ -1,7 +1,7 @@
 import * as createFirebaseFunctionsTest from "firebase-functions-test";
 import { WrappedFunction } from "firebase-functions-test/lib/main";
 
-describe("onUserCreated", () => {
+describe("onUserCreated()", () => {
   const app = {
     firestore: jest.fn(),
     storage: jest.fn()
