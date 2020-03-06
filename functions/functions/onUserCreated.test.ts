@@ -1,9 +1,11 @@
 import * as createFirebaseFunctionsTest from "firebase-functions-test";
 import { WrappedFunction } from "firebase-functions-test/lib/main";
 
-describe("onUserCreated", () => {
-  const initializeApp = jest.fn();
-  const firestore = jest.fn();
+describe("onUserCreated()", () => {
+  const app = {
+    firestore: jest.fn(),
+    storage: jest.fn()
+  };
   const runTransaction = jest.fn();
   const transaction = {
     get: jest.fn(),
@@ -11,7 +13,6 @@ describe("onUserCreated", () => {
   };
   const collection = jest.fn();
   const doc = jest.fn();
-  const storage = jest.fn();
   const bucket = jest.fn();
   const file = jest.fn();
   const fileId = "FILE_ID";
@@ -30,9 +31,9 @@ describe("onUserCreated", () => {
   let onUserCreatedFunc: WrappedFunction;
 
   beforeAll(async () => {
-    jest.mock("firebase-admin", () => ({ initializeApp }));
     jest.mock("nanoid", () => nanoid);
     jest.mock("node-fetch", () => ({ default: nodeFetch }));
+    jest.mock("../firebaseAdminApp", () => ({ default: app }));
     jest.mock("../utilities/sanitizeUserProfileImage", () => ({
       default: sanitizeUserProfileImage
     }));
@@ -43,13 +44,12 @@ describe("onUserCreated", () => {
   });
 
   beforeEach(() => {
-    initializeApp.mockReturnValue({ firestore, storage });
-    firestore.mockReturnValue({ runTransaction, collection });
+    app.firestore.mockReturnValue({ runTransaction, collection });
+    app.storage.mockReturnValue({ bucket });
     runTransaction.mockImplementation(cb => cb(transaction));
     transaction.get.mockResolvedValue({ exists: false });
     transaction.create.mockResolvedValue(undefined);
     collection.mockReturnValue({ doc });
-    storage.mockReturnValue({ bucket });
     bucket.mockReturnValue({ file });
     file.mockReturnValue({ id: fileId, exists, save, download });
     exists.mockResolvedValue([false]);
@@ -59,14 +59,13 @@ describe("onUserCreated", () => {
   });
 
   afterEach(() => {
-    initializeApp.mockReset();
-    firestore.mockReset();
+    app.firestore.mockReset();
+    app.storage.mockReset();
     runTransaction.mockReset();
     transaction.get.mockReset();
     transaction.create.mockReset();
     collection.mockReset();
     doc.mockReset();
-    storage.mockReset();
     bucket.mockReset();
     file.mockReset();
     exists.mockReset();
