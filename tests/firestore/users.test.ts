@@ -51,6 +51,9 @@ describe("LIST /users/{userId}", () => {
 });
 
 describe("UPDATE /users/{userId}", () => {
+  const profileImageURL =
+    "https://firebasestorage.googleapis.com/v0/b/chipstackoverflow.appspot.com/o/user_profile_images%2abc.png?alt=media&token=dummy";
+
   beforeEach(async () => {
     await admin
       .firestore()
@@ -58,7 +61,7 @@ describe("UPDATE /users/{userId}", () => {
       .doc(uid)
       .set({
         name: "Kohei",
-        profileImageURL: "https://example.com/"
+        profileImageURL
       });
   });
 
@@ -75,14 +78,13 @@ describe("UPDATE /users/{userId}", () => {
           .doc(uid)
           .update({
             name: "Koh",
-            profileImageURL:
-              "https://firebasestorage.googleapis.com/v0/b/chipstackoverflow.appspot.com/o/user_profile_images%2Floremipsum.png?alt=media&token=dummy"
+            profileImageURL
           })
       )
     ).resolves.toBeUndefined();
   });
 
-  it("is not allowed to update if the given profileImageURL is invalid", async () => {
+  it("is not allowed to change profileImageURL", async () => {
     await expect(
       assertSucceeds(
         app
@@ -91,7 +93,8 @@ describe("UPDATE /users/{userId}", () => {
           .doc(uid)
           .update({
             name: "Koh",
-            profileImageURL: "https://example.com/something.png"
+            profileImageURL:
+              "https://firebasestorage.googleapis.com/v0/b/chipstackoverflow.appspot.com/o/user_profile_images%2def.png?alt=media&token=dummy"
           })
       )
     ).rejects.toThrow();
