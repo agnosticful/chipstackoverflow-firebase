@@ -10,7 +10,7 @@ service cloud.firestore {
 
       allow update: if
         request.auth.uid != null &&
-        request.auth.uid == userId &&
+        request.path[4:5] == /$(request.auth.uid) &&
         request.resource.data.keys().hasAll(["name", "profileImageURL"]) &&
         request.resource.data.keys().hasOnly(["name", "profileImageURL"]) &&
         request.resource.data.name is string &&
