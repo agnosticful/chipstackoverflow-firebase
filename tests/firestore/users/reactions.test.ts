@@ -25,7 +25,7 @@ describe("GET /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeDefined();
   });
 
-  it("is not allowed accessing anyone's else", async () => {
+  it("is disallowed accessing anyone's else", async () => {
     await expect(
       assertSucceeds(
         app
@@ -54,7 +54,7 @@ describe("LIST /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeDefined();
   });
 
-  it("is not allowed accessing anyone's else", async () => {
+  it("is disallowed accessing anyone's else", async () => {
     await expect(
       assertSucceeds(
         app
@@ -185,7 +185,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is not allowed to create with invalid type", async () => {
+  it("is disallowed to create with invalid type", async () => {
     await expect(
       assertSucceeds(
         app
@@ -207,7 +207,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is not allowed to create a like or dislike for a non-existing answer", async () => {
+  it("is disallowed to create a like or dislike for a non-existing answer", async () => {
     await expect(
       assertSucceeds(
         app
@@ -229,7 +229,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is not allowed to create a like or dislike for a non-existing comment", async () => {
+  it("is disallowed to create a like or dislike for a non-existing comment", async () => {
     await expect(
       assertSucceeds(
         app
@@ -253,7 +253,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is not allowed to create a like or dislike for not answers or comments", async () => {
+  it("is disallowed to create a like or dislike for not answers or comments", async () => {
     await expect(
       assertSucceeds(
         app
@@ -275,7 +275,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is not allowed to create a like or dislike if  for not answers or comments", async () => {
+  it("is disallowed to create a like or dislike if  for not answers or comments", async () => {
     await expect(
       assertSucceeds(
         app
@@ -297,7 +297,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is not allowed to create a like or dislike in anyone else", async () => {
+  it("is disallowed to create a like or dislike in anyone else", async () => {
     await expect(
       assertSucceeds(
         app
