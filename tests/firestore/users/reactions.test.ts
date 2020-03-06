@@ -11,7 +11,7 @@ const admin = initializeAdminApp({ projectId });
 const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("GET /users/{userId}/reactions/{reactionId}", () => {
-  it("is allowed accessing my ones", async () => {
+  it("is allowed to get a reaction the user created", async () => {
     await expect(
       assertSucceeds(
         app
@@ -25,7 +25,7 @@ describe("GET /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeDefined();
   });
 
-  it("is disallowed accessing anyone's else", async () => {
+  it("is disallowed to get a reaction someone created", async () => {
     await expect(
       assertSucceeds(
         app
@@ -41,7 +41,7 @@ describe("GET /users/{userId}/reactions/{reactionId}", () => {
 });
 
 describe("LIST /users/{userId}/reactions/{reactionId}", () => {
-  it("is allowed accessing my ones", async () => {
+  it("is allowed to get reactions the user created", async () => {
     await expect(
       assertSucceeds(
         app
@@ -54,7 +54,7 @@ describe("LIST /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeDefined();
   });
 
-  it("is disallowed accessing anyone's else", async () => {
+  it("is disallowed to get reactions someone created", async () => {
     await expect(
       assertSucceeds(
         app
@@ -97,7 +97,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     await clearFirestoreData({ projectId });
   });
 
-  it("is allowed to create a like for an answer", async () => {
+  it("is allowed to create a like to an answer", async () => {
     await expect(
       assertSucceeds(
         app
@@ -119,7 +119,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is allowed to create a dislike for an answer", async () => {
+  it("is allowed to create a dislike to an answer", async () => {
     await expect(
       assertSucceeds(
         app
@@ -141,7 +141,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is allowed to create a like for a comment", async () => {
+  it("is allowed to create a like to a comment", async () => {
     await expect(
       assertSucceeds(
         app
@@ -163,7 +163,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is allowed to create a dislike for a comment", async () => {
+  it("is allowed to create a dislike to a comment", async () => {
     await expect(
       assertSucceeds(
         app
@@ -185,7 +185,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is disallowed to create with invalid type", async () => {
+  it("is disallowed to create with invalid `type`", async () => {
     await expect(
       assertSucceeds(
         app
@@ -207,7 +207,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed to create a like or dislike for a non-existing answer", async () => {
+  it("is disallowed to create a like or dislike to a non-existing answer", async () => {
     await expect(
       assertSucceeds(
         app
@@ -229,7 +229,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed to create a like or dislike for a non-existing comment", async () => {
+  it("is disallowed to create a like or dislike to a non-existing comment", async () => {
     await expect(
       assertSucceeds(
         app
@@ -253,7 +253,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed to create a like or dislike for not answers or comments", async () => {
+  it("is disallowed to create a like or dislike to not answers or comments", async () => {
     await expect(
       assertSucceeds(
         app
@@ -275,7 +275,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed to create a like or dislike if  for not answers or comments", async () => {
+  it("is disallowed to create a like or dislike if to not answers or comments", async () => {
     await expect(
       assertSucceeds(
         app
@@ -297,7 +297,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
     ).rejects.toThrow();
   });
 
-  it("is disallowed to create a like or dislike in anyone else", async () => {
+  it("is disallowed to create a like or dislike in someone's", async () => {
     await expect(
       assertSucceeds(
         app
@@ -321,7 +321,7 @@ describe("CREATE /users/{userId}/reactions/{reactionId}", () => {
 });
 
 describe("DELETE /users/{userId}/reactions/{reactionId}", () => {
-  it("is allowed to delete my like or dislike", async () => {
+  it("is allowed to delete a like or dislike the user created", async () => {
     await expect(
       assertSucceeds(
         app
@@ -335,7 +335,7 @@ describe("DELETE /users/{userId}/reactions/{reactionId}", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("is allowed to delete someone's like or dislike", async () => {
+  it("is allowed to delete likes or dislikes someone created", async () => {
     await expect(
       assertSucceeds(
         app
