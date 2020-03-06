@@ -5,11 +5,10 @@ import {
   initializeTestApp
 } from "@firebase/testing";
 
-const admin = initializeAdminApp({ projectId: "my-test-project" });
-const app = initializeTestApp({
-  projectId: "my-test-project",
-  auth: { uid: "loremipsum", email: "alice@example.com" }
-});
+const projectId = "uidnvmmzskggydzy";
+const uid = "bsgjxvlbbchfapiw";
+const admin = initializeAdminApp({ projectId });
+const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("GET /users/{userId}", () => {
   it("is allowed accessing myself", async () => {
@@ -18,7 +17,7 @@ describe("GET /users/{userId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .get()
       )
     ).resolves.toBeDefined();
@@ -59,7 +58,7 @@ describe("UPDATE /users/{userId}", () => {
     await admin
       .firestore()
       .collection("users")
-      .doc("loremipsum")
+      .doc(uid)
       .set({
         name: "Kohei",
         profileImageURL
@@ -67,9 +66,7 @@ describe("UPDATE /users/{userId}", () => {
   });
 
   afterEach(async () => {
-    await clearFirestoreData({
-      projectId: "my-test-project"
-    });
+    await clearFirestoreData({ projectId });
   });
 
   it("is allowed to update myself", async () => {
@@ -78,7 +75,7 @@ describe("UPDATE /users/{userId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .update({
             name: "Koh",
             profileImageURL
@@ -93,7 +90,7 @@ describe("UPDATE /users/{userId}", () => {
         app
           .firestore()
           .collection("users")
-          .doc("loremipsum")
+          .doc(uid)
           .update({
             name: "Koh",
             profileImageURL:
