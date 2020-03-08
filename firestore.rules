@@ -17,30 +17,6 @@ service cloud.firestore {
         request.resource.data.name.size() >= 3 &&
         request.resource.data.name.size() < 32 &&
         request.resource.data.profileImageURL == resource.data.profileImageURL;
-
-      match /reactions/{reactionId} {
-        allow read: if
-          request.auth.uid != null &&
-          request.auth.uid == userId;
-        
-        allow create: if
-          request.auth.uid != null &&
-          request.auth.uid == userId &&
-          request.resource.data.keys().hasAll(["to", "type"]) &&
-          request.resource.data.keys().hasOnly(["to", "type"]) &&
-          request.resource.data.to is path &&
-          request.resource.data.to[3:4] == /posts &&
-          (
-            request.resource.data.to[5:6] == /answers ||
-            request.resource.data.to[5:6] == /comments
-          ) &&
-          exists(request.resource.data.to) &&
-          request.resource.data.type in ["LIKE", "DISLIKE"];
-
-        allow delete: if
-          request.auth.uid != null &&
-          request.auth.uid == userId;
-      }
     }
 
     match /posts/{postId} {
@@ -56,7 +32,7 @@ service cloud.firestore {
           request.resource.data.post is path &&
           request.resource.data.post == request.path[0:5] &&
           request.resource.data.user is path &&
-          request.resource.data.user == /databases/$(database)/documents/users/$(request.auth.uid) &&
+          request.resource.data.user[3:] == /users/$(request.auth.uid) &&
           request.resource.data.body is string &&
           request.resource.data.body.size() >= 8 &&
           request.resource.data.body.size() < 65536 &&
@@ -64,6 +40,52 @@ service cloud.firestore {
           request.resource.data.likes == 0 &&
           request.resource.data.dislikes is int &&
           request.resource.data.dislikes == 0;
+
+        match /comments/{commentId} {
+          match /reactions/{reactionId} {
+            allow list: if
+              request.auth.uid != null &&
+              resource.data.user[3:] == /users/$(request.auth.uid);
+
+            allow create: if
+              request.auth.uid != null &&
+              request.path[10:] == /$(request.auth.uid) &&
+              request.resource.data.keys().hasAll(["comment", "user", "type"]) &&
+              request.resource.data.keys().hasOnly(["comment", "user", "type"]) &&
+              request.resource.data.comment is path &&
+              request.resource.data.comment[3:] == /posts/$(postId)/answers/$(answerId)/comments/$(commentId) &&
+              exists(request.resource.data.comment) &&
+              request.resource.data.user is path &&
+              request.resource.data.user[3:] == /users/$(request.auth.uid) &&
+              request.resource.data.type in ["LIKE", "DISLIKE"];
+
+            allow delete: if
+              request.auth.uid != null &&
+              resource.data.user[3:] == /users/$(request.auth.uid);
+          }
+        }
+
+        match /reactions/{reactionId} {
+          allow list: if
+            request.auth.uid != null &&
+            resource.data.user[3:] == /users/$(request.auth.uid);
+
+          allow create: if
+            request.auth.uid != null &&
+            request.path[8:] == /$(request.auth.uid) &&
+            request.resource.data.keys().hasAll(["answer", "user", "type"]) &&
+            request.resource.data.keys().hasOnly(["answer", "user", "type"]) &&
+            request.resource.data.answer is path &&
+            request.resource.data.answer[3:] == /posts/$(postId)/answers/$(answerId) &&
+            exists(request.resource.data.answer) &&
+            request.resource.data.user is path &&
+            request.resource.data.user[3:] == /users/$(request.auth.uid) &&
+            request.resource.data.type in ["LIKE", "DISLIKE"];
+
+          allow delete: if
+            request.auth.uid != null &&
+            resource.data.user[3:] == /users/$(request.auth.uid);
+        }
       }
     }
   }
