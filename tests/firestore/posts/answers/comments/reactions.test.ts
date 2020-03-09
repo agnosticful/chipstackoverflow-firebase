@@ -4,9 +4,10 @@ import {
   initializeAdminApp,
   initializeTestApp
 } from "@firebase/testing";
+import * as faker from "faker";
 
-const projectId = "jxamgjnpvghcpcpw";
-const uid = "ozvbcwaybvmqyehi";
+const projectId = faker.random.alphaNumeric(16);
+const uid = faker.random.alphaNumeric(16);
 const admin = initializeAdminApp({ projectId });
 const app = initializeTestApp({ projectId, auth: { uid } });
 
@@ -55,9 +56,9 @@ describe("LIST /posts/{postId}/answers/{answerId}/comments/{commentId}/reactions
 });
 
 describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}/reactions/{reactionId}", () => {
-  const postId = "aiqmfllgxoamntqj";
-  const answerId = "cgdzkqgduynebecy";
-  const commentId = "ejgbdfseujvegcrs";
+  const postId = faker.random.alphaNumeric(16);
+  const answerId = faker.random.alphaNumeric(16);
+  const commentId = faker.random.alphaNumeric(16);
 
   beforeEach(async () => {
     await admin
@@ -311,9 +312,9 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}/reactio
 });
 
 describe("DELETE /posts/{postId}/answers/{answerId}/comments/{commentId}/reactions/{reactionId}", () => {
-  const postId = "oelprdcsnujsyrdh";
-  const answerId = "pkvfqdqyksxidspa";
-  const commentId = "jyhnnmzlzedsndwx";
+  const postId = faker.random.alphaNumeric(16);
+  const answerId = faker.random.alphaNumeric(16);
+  const commentId = faker.random.alphaNumeric(16);
 
   beforeEach(async () => {
     await admin
