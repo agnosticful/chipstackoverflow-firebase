@@ -4,9 +4,10 @@ import {
   initializeAdminApp,
   initializeTestApp
 } from "@firebase/testing";
+import * as faker from "faker";
 
-const projectId = "qsdfzxikwkvwmihx";
-const uid = "xaivfmsmfkqbeemi";
+const projectId = faker.random.alphaNumeric(16);
+const uid = faker.random.alphaNumeric(16);
 const admin = initializeAdminApp({ projectId });
 const app = initializeTestApp({ projectId, auth: { uid } });
 
@@ -51,8 +52,8 @@ describe("LIST /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () =>
 });
 
 describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () => {
-  const postId = "mrpbrripreheaabe";
-  const answerId = "xdufsuklbmstjpxv";
+  const postId = faker.random.alphaNumeric(16);
+  const answerId = faker.random.alphaNumeric(16);
 
   beforeEach(async () => {
     await admin
@@ -274,8 +275,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () 
 });
 
 describe("DELETE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () => {
-  const postId = "fxkjdriqaencpfvy";
-  const answerId = "uikuwsqojfsjcspm";
+  const postId = faker.random.alphaNumeric(16);
+  const answerId = faker.random.alphaNumeric(16);
 
   beforeEach(async () => {
     await admin

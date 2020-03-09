@@ -3,9 +3,10 @@ import {
   clearFirestoreData,
   initializeTestApp
 } from "@firebase/testing";
+import * as faker from "faker";
 
-const projectId = "sgzcjzunovgcnbxf";
-const uid = "jjyiidzgqwcvprff";
+const projectId = faker.random.alphaNumeric(16);
+const uid = faker.random.alphaNumeric(16);
 const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("GET /posts/{postId}/answers/{answerId}", () => {
@@ -59,8 +60,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
         postRef.collection("answers").add({
           post: postRef,
           user: userRef,
-          body:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          body: faker.lorem.sentence(),
           likes: 0,
           dislikes: 0
         })
@@ -77,8 +77,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
             .collection("posts")
             .doc(),
           user: userRef,
-          body:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          body: faker.lorem.sentence(),
           likes: 0,
           dislikes: 0
         })
@@ -95,8 +94,7 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
             .firestore()
             .collection("users")
             .doc(),
-          body:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          body: faker.lorem.sentence(),
           likes: 0,
           dislikes: 0
         })
@@ -119,34 +117,30 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
   });
 
   it("is disallowed to create an answer with non-zero `likes`", async () => {
-    for (const likes of [-1, 1, 0.01]) {
-      await expect(
-        assertSucceeds(
-          postRef.collection("answers").add({
-            post: postRef,
-            user: userRef,
-            body: "",
-            likes,
-            dislikes: 0
-          })
-        )
-      ).rejects.toThrow();
-    }
+    await expect(
+      assertSucceeds(
+        postRef.collection("answers").add({
+          post: postRef,
+          user: userRef,
+          body: faker.lorem.sentence(),
+          likes: 1,
+          dislikes: 0
+        })
+      )
+    ).rejects.toThrow();
   });
 
   it("is disallowed to create an answer with non-zero `dislikes`", async () => {
-    for (const dislikes of [-1, 1, 0.01]) {
-      await expect(
-        assertSucceeds(
-          postRef.collection("answers").add({
-            post: postRef,
-            user: userRef,
-            body: "",
-            likes: 0,
-            dislikes
-          })
-        )
-      ).rejects.toThrow();
-    }
+    await expect(
+      assertSucceeds(
+        postRef.collection("answers").add({
+          post: postRef,
+          user: userRef,
+          body: faker.lorem.sentence(),
+          likes: 0,
+          dislikes: 1
+        })
+      )
+    ).rejects.toThrow();
   });
 });
