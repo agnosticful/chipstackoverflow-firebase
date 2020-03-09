@@ -4,9 +4,10 @@ import {
   initializeAdminApp,
   initializeTestApp
 } from "@firebase/testing";
+import * as faker from "faker";
 
-const projectId = "uidnvmmzskggydzy";
-const uid = "bsgjxvlbbchfapiw";
+const projectId = faker.random.alphaNumeric(16);
+const uid = faker.random.alphaNumeric(16);
 const admin = initializeAdminApp({ projectId });
 const app = initializeTestApp({ projectId, auth: { uid } });
 
@@ -51,8 +52,8 @@ describe("LIST /users/{userId}", () => {
 });
 
 describe("UPDATE /users/{userId}", () => {
-  const profileImageURL =
-    "https://firebasestorage.googleapis.com/v0/b/chipstackoverflow.appspot.com/o/user_profile_images%2abc.png?alt=media&token=dummy";
+  const name = faker.name.firstName();
+  const profileImageURL = faker.internet.url();
 
   beforeEach(async () => {
     await admin
@@ -60,7 +61,7 @@ describe("UPDATE /users/{userId}", () => {
       .collection("users")
       .doc(uid)
       .set({
-        name: "Kohei",
+        name,
         profileImageURL
       });
   });
@@ -77,7 +78,7 @@ describe("UPDATE /users/{userId}", () => {
           .collection("users")
           .doc(uid)
           .update({
-            name: "Koh",
+            name: faker.name.firstName(),
             profileImageURL
           })
       )
@@ -92,9 +93,8 @@ describe("UPDATE /users/{userId}", () => {
           .collection("users")
           .doc(uid)
           .update({
-            name: "Koh",
-            profileImageURL:
-              "https://firebasestorage.googleapis.com/v0/b/chipstackoverflow.appspot.com/o/user_profile_images%2def.png?alt=media&token=dummy"
+            name,
+            profileImageURL: faker.internet.url()
           })
       )
     ).rejects.toThrow();
@@ -108,9 +108,8 @@ describe("UPDATE /users/{userId}", () => {
           .collection("users")
           .doc()
           .update({
-            name: "Rio",
-            profileImageURL:
-              "https://firebasestorage.googleapis.com/v0/b/chipstackoverflow.appspot.com/o/user_profile_images%2Ffoobar.png?alt=media&token=dummy"
+            name,
+            profileImageURL
           })
       )
     ).rejects.toThrow();
