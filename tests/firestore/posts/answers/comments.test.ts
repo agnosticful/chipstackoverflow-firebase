@@ -9,6 +9,41 @@ const projectId = faker.random.alphaNumeric(16);
 const uid = faker.random.alphaNumeric(16);
 const app = initializeTestApp({ projectId, auth: { uid } });
 
+describe("GET /posts/{postId}/answers/{answerId}/comments/{commentId}", () => {
+  it("is allowed to get a comment in anyway", async () => {
+    await expect(
+      assertSucceeds(
+        app
+          .firestore()
+          .collection("posts")
+          .doc()
+          .collection("answers")
+          .doc()
+          .collection("comments")
+          .doc()
+          .get()
+      )
+    ).resolves.toBeDefined();
+  });
+});
+
+describe("LIST /posts/{postId}/answers/{answerId}/comments/{commentId}", () => {
+  it("is allowed to get comments in anyway", async () => {
+    await expect(
+      assertSucceeds(
+        app
+          .firestore()
+          .collection("posts")
+          .doc()
+          .collection("answers")
+          .doc()
+          .collection("comments")
+          .get()
+      )
+    ).resolves.toBeDefined();
+  });
+});
+
 describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () => {
   const postId = faker.random.alphaNumeric(16);
   const answerId = faker.random.alphaNumeric(16);

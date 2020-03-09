@@ -42,6 +42,8 @@ service cloud.firestore {
           request.resource.data.dislikes == 0;
 
         match /comments/{commentId} {
+          allow read;
+
           allow create: if
             request.auth.uid != null &&
             request.resource.data.keys().hasAll(["answer", "user", "body", "likes", "dislikes"]) &&
