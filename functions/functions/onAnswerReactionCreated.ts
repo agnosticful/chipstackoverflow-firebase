@@ -9,13 +9,26 @@ export default functions.firestore
 
     await app
       .firestore()
-      .collection("posts")
-      .doc(params.postId)
-      .collection("answers")
-      .doc(params.answerId)
+      .batch()
       .update(
+        app
+          .firestore()
+          .collection("posts")
+          .doc(params.postId)
+          .collection("answers")
+          .doc(params.answerId),
         type === "LIKE"
           ? { likes: firestore.FieldValue.increment(1) }
           : { dislikes: firestore.FieldValue.increment(1) }
-      );
+      )
+      .update(
+        app
+          .firestore()
+          .collection("posts")
+          .doc(params.postId),
+        type === "LIKE"
+          ? { totalLikes: firestore.FieldValue.increment(1) }
+          : { totalDislikes: firestore.FieldValue.increment(1) }
+      )
+      .commit();
   });
