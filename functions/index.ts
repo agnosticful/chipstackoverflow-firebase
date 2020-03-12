@@ -1,3 +1,4 @@
+export { default as createPost } from "./functions/createPost";
 export { default as onUserCreated } from "./functions/onUserCreated";
 export { default as onAnswerReactionCreated } from "./functions/onAnswerReactionCreated";
 export { default as onAnswerReactionDeleted } from "./functions/onAnswerReactionDeleted";
