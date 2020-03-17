@@ -39,6 +39,10 @@ export default functions.https.onCall(async (data, { auth }) => {
       totalLikes: 0,
       totalDislikes: 0,
       gameSituation,
+      user: firebaseAdminApp
+        .firestore()
+        .collection("users")
+        .doc(auth.uid),
       createdAt: firestore.FieldValue.serverTimestamp(),
       lastUpdatedAt: firestore.FieldValue.serverTimestamp()
     });
