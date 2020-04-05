@@ -1,7 +1,8 @@
 import {
   assertSucceeds,
   clearFirestoreData,
-  initializeTestApp
+  firestore,
+  initializeTestApp,
 } from "@firebase/testing";
 import * as faker from "faker";
 
@@ -77,7 +78,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () =>
               .doc(uid),
             body: faker.lorem.sentence(),
             likes: 0,
-            dislikes: 0
+            dislikes: 0,
+            createdAt: firestore.FieldValue.serverTimestamp(),
           })
       )
     ).resolves.toBeUndefined();
@@ -107,7 +109,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () =>
               .doc(uid),
             body: faker.lorem.sentence(),
             likes: 0,
-            dislikes: 0
+            dislikes: 0,
+            createdAt: firestore.FieldValue.serverTimestamp(),
           })
       )
     ).rejects.toThrow();
@@ -137,7 +140,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () =>
               .doc(),
             body: faker.lorem.sentence(),
             likes: 0,
-            dislikes: 0
+            dislikes: 0,
+            createdAt: firestore.FieldValue.serverTimestamp(),
           })
       )
     ).rejects.toThrow();
@@ -167,7 +171,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () =>
               .doc(uid),
             body: "",
             likes: 0,
-            dislikes: 0
+            dislikes: 0,
+            createdAt: firestore.FieldValue.serverTimestamp(),
           })
       )
     ).rejects.toThrow();
@@ -197,7 +202,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () =>
               .doc(uid),
             body: faker.lorem.sentence(),
             likes: 1,
-            dislikes: 0
+            dislikes: 0,
+            createdAt: firestore.FieldValue.serverTimestamp(),
           })
       )
     ).rejects.toThrow();
@@ -227,7 +233,68 @@ describe("CREATE /posts/{postId}/answers/{answerId}/comments/{commentId}", () =>
               .doc(uid),
             body: faker.lorem.sentence(),
             likes: 0,
-            dislikes: 1
+            dislikes: 1,
+            createdAt: firestore.FieldValue.serverTimestamp(),
+          })
+      )
+    ).rejects.toThrow();
+  });
+
+  it("is disallowed to create a comment with `createdAt` that is not server timestamp", async () => {
+    await expect(
+      assertSucceeds(
+        app
+          .firestore()
+          .collection("posts")
+          .doc(postId)
+          .collection("answers")
+          .doc(answerId)
+          .collection("comments")
+          .doc(commentId)
+          .set({
+            answer: app
+              .firestore()
+              .collection("posts")
+              .doc(postId)
+              .collection("answers")
+              .doc(answerId),
+            user: app
+              .firestore()
+              .collection("users")
+              .doc(uid),
+            body: faker.lorem.sentence(),
+            likes: 0,
+            dislikes: 1,
+            createdAt: firestore.Timestamp.fromMillis(Date.now() - 1),
+          })
+      )
+    ).rejects.toThrow();
+
+    await expect(
+      assertSucceeds(
+        app
+          .firestore()
+          .collection("posts")
+          .doc(postId)
+          .collection("answers")
+          .doc(answerId)
+          .collection("comments")
+          .doc(commentId)
+          .set({
+            answer: app
+              .firestore()
+              .collection("posts")
+              .doc(postId)
+              .collection("answers")
+              .doc(answerId),
+            user: app
+              .firestore()
+              .collection("users")
+              .doc(uid),
+            body: faker.lorem.sentence(),
+            likes: 0,
+            dislikes: 1,
+            createdAt: firestore.Timestamp.fromMillis(Date.now() + 1),
           })
       )
     ).rejects.toThrow();

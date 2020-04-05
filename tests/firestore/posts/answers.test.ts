@@ -1,7 +1,8 @@
 import {
   assertSucceeds,
   clearFirestoreData,
-  initializeTestApp
+  firestore,
+  initializeTestApp,
 } from "@firebase/testing";
 import * as faker from "faker";
 
@@ -62,7 +63,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
           user: userRef,
           body: faker.lorem.sentence(),
           likes: 0,
-          dislikes: 0
+          dislikes: 0,
+          createdAt: firestore.FieldValue.serverTimestamp(),
         })
       )
     ).resolves.toBeDefined();
@@ -79,7 +81,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
           user: userRef,
           body: faker.lorem.sentence(),
           likes: 0,
-          dislikes: 0
+          dislikes: 0,
+          createdAt: firestore.FieldValue.serverTimestamp(),
         })
       )
     ).rejects.toThrow();
@@ -96,7 +99,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
             .doc(),
           body: faker.lorem.sentence(),
           likes: 0,
-          dislikes: 0
+          dislikes: 0,
+          createdAt: firestore.FieldValue.serverTimestamp(),
         })
       )
     ).rejects.toThrow();
@@ -110,7 +114,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
           user: userRef,
           body: "",
           likes: 0,
-          dislikes: 0
+          dislikes: 0,
+          createdAt: firestore.FieldValue.serverTimestamp(),
         })
       )
     ).rejects.toThrow();
@@ -124,7 +129,8 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
           user: userRef,
           body: faker.lorem.sentence(),
           likes: 1,
-          dislikes: 0
+          dislikes: 0,
+          createdAt: firestore.FieldValue.serverTimestamp(),
         })
       )
     ).rejects.toThrow();
@@ -138,7 +144,36 @@ describe("CREATE /posts/{postId}/answers/{answerId}", () => {
           user: userRef,
           body: faker.lorem.sentence(),
           likes: 0,
-          dislikes: 1
+          dislikes: 1,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        })
+      )
+    ).rejects.toThrow();
+  });
+
+  it("is disallowed to create an answer with `createdAt` that is not server timestamp", async () => {
+    await expect(
+      assertSucceeds(
+        postRef.collection("answers").add({
+          post: postRef,
+          user: userRef,
+          body: faker.lorem.sentence(),
+          likes: 0,
+          dislikes: 1,
+          createdAt: firestore.Timestamp.fromMillis(Date.now() - 1),
+        })
+      )
+    ).rejects.toThrow();
+
+    await expect(
+      assertSucceeds(
+        postRef.collection("answers").add({
+          post: postRef,
+          user: userRef,
+          body: faker.lorem.sentence(),
+          likes: 0,
+          dislikes: 1,
+          createdAt: firestore.Timestamp.fromMillis(Date.now() + 1),
         })
       )
     ).rejects.toThrow();
