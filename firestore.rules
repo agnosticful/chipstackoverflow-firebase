@@ -46,8 +46,8 @@ service cloud.firestore {
 
           allow create: if
             request.auth.uid != null &&
-            request.resource.data.keys().hasAll(["answer", "user", "body", "likes", "dislikes"]) &&
-            request.resource.data.keys().hasOnly(["answer", "user", "body", "likes", "dislikes"]) &&
+            request.resource.data.keys().hasAll(["answer", "user", "body", "likes", "dislikes", "createdAt"]) &&
+            request.resource.data.keys().hasOnly(["answer", "user", "body", "likes", "dislikes", "createdAt"]) &&
             request.resource.data.answer is path &&
             request.resource.data.answer == request.path[0:7] &&
             request.resource.data.user is path &&
@@ -58,7 +58,9 @@ service cloud.firestore {
             request.resource.data.likes is int &&
             request.resource.data.likes == 0 &&
             request.resource.data.dislikes is int &&
-            request.resource.data.dislikes == 0;
+            request.resource.data.dislikes == 0 &&
+            request.resource.data.createdAt is timestamp &&
+            request.resource.data.createdAt == request.time;
 
           match /reactions/{reactionId} {
             allow list: if
