@@ -27,10 +27,9 @@ service cloud.firestore {
 
         allow create: if
           request.auth.uid != null &&
-          request.resource.data.keys().hasAll(["post", "user", "body", "likes", "dislikes", "createdAt"]) &&
-          request.resource.data.keys().hasOnly(["post", "user", "body", "likes", "dislikes", "createdAt"]) &&
-          request.resource.data.post is path &&
-          request.resource.data.post == request.path[0:5] &&
+          exists(/databases/$(database)/documents/posts/$(postId)) &&
+          request.resource.data.keys().hasAll(["user", "body", "likes", "dislikes", "createdAt"]) &&
+          request.resource.data.keys().hasOnly(["user", "body", "likes", "dislikes", "createdAt"]) &&
           request.resource.data.user is path &&
           request.resource.data.user[3:] == /users/$(request.auth.uid) &&
           request.resource.data.body is string &&
@@ -48,10 +47,9 @@ service cloud.firestore {
 
           allow create: if
             request.auth.uid != null &&
-            request.resource.data.keys().hasAll(["answer", "user", "body", "likes", "dislikes", "createdAt"]) &&
-            request.resource.data.keys().hasOnly(["answer", "user", "body", "likes", "dislikes", "createdAt"]) &&
-            request.resource.data.answer is path &&
-            request.resource.data.answer == request.path[0:7] &&
+            exists(/databases/$(database)/documents/posts/$(postId)/answers/$(answerId)) &&
+            request.resource.data.keys().hasAll(["user", "body", "likes", "dislikes", "createdAt"]) &&
+            request.resource.data.keys().hasOnly(["user", "body", "likes", "dislikes", "createdAt"]) &&
             request.resource.data.user is path &&
             request.resource.data.user[3:] == /users/$(request.auth.uid) &&
             request.resource.data.body is string &&
@@ -72,11 +70,9 @@ service cloud.firestore {
             allow create: if
               request.auth.uid != null &&
               request.path[10:] == /$(request.auth.uid) &&
-              request.resource.data.keys().hasAll(["comment", "user", "type"]) &&
-              request.resource.data.keys().hasOnly(["comment", "user", "type"]) &&
-              request.resource.data.comment is path &&
-              request.resource.data.comment[3:] == /posts/$(postId)/answers/$(answerId)/comments/$(commentId) &&
-              exists(request.resource.data.comment) &&
+              exists(/databases/$(database)/documents/posts/$(postId)/answers/$(answerId)/comments/$(commentId)) &&
+              request.resource.data.keys().hasAll(["user", "type"]) &&
+              request.resource.data.keys().hasOnly(["user", "type"]) &&
               request.resource.data.user is path &&
               request.resource.data.user[3:] == /users/$(request.auth.uid) &&
               request.resource.data.type in ["LIKE", "DISLIKE"];
@@ -95,11 +91,9 @@ service cloud.firestore {
           allow create: if
             request.auth.uid != null &&
             request.path[8:] == /$(request.auth.uid) &&
-            request.resource.data.keys().hasAll(["answer", "user", "type"]) &&
-            request.resource.data.keys().hasOnly(["answer", "user", "type"]) &&
-            request.resource.data.answer is path &&
-            request.resource.data.answer[3:] == /posts/$(postId)/answers/$(answerId) &&
-            exists(request.resource.data.answer) &&
+            exists(/databases/$(database)/documents/posts/$(postId)/answers/$(answerId)) &&
+            request.resource.data.keys().hasAll(["user", "type"]) &&
+            request.resource.data.keys().hasOnly(["user", "type"]) &&
             request.resource.data.user is path &&
             request.resource.data.user[3:] == /users/$(request.auth.uid) &&
             request.resource.data.type in ["LIKE", "DISLIKE"];

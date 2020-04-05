@@ -2,13 +2,13 @@ import {
   assertSucceeds,
   clearFirestoreData,
   initializeAdminApp,
-  initializeTestApp
+  initializeTestApp,
 } from "@firebase/testing";
 import * as faker from "faker";
 
 const projectId = faker.random.alphaNumeric(16);
 const uid = faker.random.alphaNumeric(16);
-const admin = initializeAdminApp({ projectId });
+const adminApp = initializeAdminApp({ projectId });
 const app = initializeTestApp({ projectId, auth: { uid } });
 
 describe("LIST /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () => {
@@ -37,14 +37,7 @@ describe("LIST /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () =>
           .collection("answers")
           .doc()
           .collection("reactions")
-          .where(
-            "user",
-            "==",
-            app
-              .firestore()
-              .collection("users")
-              .doc(uid)
-          )
+          .where("user", "==", app.firestore().collection("users").doc(uid))
           .get()
       )
     ).resolves.toBeDefined();
@@ -52,17 +45,23 @@ describe("LIST /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () =>
 });
 
 describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () => {
-  const postId = faker.random.alphaNumeric(16);
-  const answerId = faker.random.alphaNumeric(16);
+  const user = app.firestore().collection("users").doc(uid);
+  const post = app.firestore().collection("posts").doc();
+  const answer = app
+    .firestore()
+    .collection("posts")
+    .doc(post.id)
+    .collection("answers")
+    .doc();
 
   beforeEach(async () => {
-    await admin
+    await adminApp
       .firestore()
       .collection("posts")
-      .doc(postId)
+      .doc(post.id)
       .collection("answers")
-      .doc(answerId)
-      .set({});
+      .doc(answer.id)
+      .set({ dummy: true });
   });
 
   afterEach(async () => {
@@ -72,27 +71,10 @@ describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () 
   it("is allowed to create a like to an answer", async () => {
     await expect(
       assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc(uid)
-          .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("answers")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc(uid),
-            type: "LIKE"
-          })
+        answer.collection("reactions").doc(uid).set({
+          user,
+          type: "LIKE",
+        })
       )
     ).resolves.toBeUndefined();
   });
@@ -100,119 +82,59 @@ describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () 
   it("is allowed to create a dislike to an answer", async () => {
     await expect(
       assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc(uid)
-          .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("answers")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc(uid),
-            type: "DISLIKE"
-          })
+        answer.collection("reactions").doc(uid).set({
+          user,
+          type: "DISLIKE",
+        })
       )
     ).resolves.toBeUndefined();
+  });
+
+  it("is disallowed to create a like to a non-existing answer", async () => {
+    await adminApp
+      .firestore()
+      .collection("posts")
+      .doc(post.id)
+      .collection("answers")
+      .doc(answer.id)
+      .delete();
+
+    await expect(
+      assertSucceeds(
+        answer.collection("reactions").doc(uid).set({
+          user,
+          type: "LIKE",
+        })
+      )
+    ).rejects.toThrow();
+  });
+
+  it("is disallowed to create a dislike to a non-existing answer", async () => {
+    await adminApp
+      .firestore()
+      .collection("posts")
+      .doc(post.id)
+      .collection("answers")
+      .doc(answer.id)
+      .delete();
+
+    await expect(
+      assertSucceeds(
+        answer.collection("reactions").doc(uid).set({
+          user,
+          type: "DISLIKE",
+        })
+      )
+    ).rejects.toThrow();
   });
 
   it("is disallowed to create with id that is not the user's ID", async () => {
     await expect(
       assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc()
-          .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("answers")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc(uid),
-            type: "LIKEY"
-          })
-      )
-    ).rejects.toThrow();
-  });
-
-  it("is disallowed to create a like or dislike to a non-existing answer", async () => {
-    await admin
-      .firestore()
-      .collection("posts")
-      .doc(postId)
-      .collection("answers")
-      .doc(answerId)
-      .delete();
-
-    await expect(
-      assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc(uid)
-          .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("answers")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc(uid),
-            type: "LIKE"
-          })
-      )
-    ).rejects.toThrow();
-  });
-
-  it("is disallowed to create a like or dislike to not an answer", async () => {
-    await expect(
-      assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc(uid)
-          .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("questions")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc(uid),
-            type: "LIKE"
-          })
+        answer.collection("reactions").doc().set({
+          user,
+          type: "LIKE",
+        })
       )
     ).rejects.toThrow();
   });
@@ -220,26 +142,12 @@ describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () 
   it("is disallowed to create a like or dislike as someone else", async () => {
     await expect(
       assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
+        answer
           .collection("reactions")
           .doc(uid)
           .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("questions")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc("hubnienwduabzbch"),
-            type: "LIKE"
+            user: app.firestore().collection("users").doc(),
+            type: "LIKE",
           })
       )
     ).rejects.toThrow();
@@ -248,110 +156,58 @@ describe("CREATE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () 
   it("is disallowed to create with invalid `type`", async () => {
     await expect(
       assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc(uid)
-          .set({
-            answer: app
-              .firestore()
-              .collection("posts")
-              .doc(postId)
-              .collection("answers")
-              .doc(answerId),
-            user: app
-              .firestore()
-              .collection("users")
-              .doc(uid),
-            type: "LIKEY"
-          })
+        answer.collection("reactions").doc(uid).set({
+          user,
+          type: "LIKEY",
+        })
       )
     ).rejects.toThrow();
   });
 });
 
 describe("DELETE /posts/{postId}/answers/{answerId}/reactions/{reactionId}", () => {
-  const postId = faker.random.alphaNumeric(16);
-  const answerId = faker.random.alphaNumeric(16);
+  const user = app.firestore().collection("users").doc(uid);
+  const post = app.firestore().collection("posts").doc();
+  const answer = post.collection("answers").doc();
 
   beforeEach(async () => {
-    await admin
+    await adminApp
       .firestore()
       .collection("posts")
-      .doc(postId)
+      .doc(post.id)
       .collection("answers")
-      .doc(answerId)
+      .doc(answer.id)
       .collection("reactions")
       .doc(uid)
       .set({
-        answer: admin
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId),
-        user: admin
-          .firestore()
-          .collection("users")
-          .doc(uid),
-        type: "LIKE"
+        user,
+        type: "LIKE",
       });
 
-    await admin
+    await adminApp
       .firestore()
       .collection("posts")
-      .doc(postId)
+      .doc(post.id)
       .collection("answers")
-      .doc(answerId)
+      .doc(answer.id)
       .collection("reactions")
       .doc("wbzoxdkqfmehkppi")
       .set({
-        answer: admin
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId),
-        user: admin
-          .firestore()
-          .collection("users")
-          .doc("wbzoxdkqfmehkppi"),
-        type: "LIKE"
+        user: app.firestore().collection("users").doc(),
+        type: "LIKE",
       });
   });
 
   it("is allowed to delete a like or dislike the user created", async () => {
     await expect(
-      assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc(uid)
-          .delete()
-      )
+      assertSucceeds(answer.collection("reactions").doc(uid).delete())
     ).resolves.toBeUndefined();
   });
 
   it("is disallowed to delete likes or dislikes someone created", async () => {
     await expect(
       assertSucceeds(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(postId)
-          .collection("answers")
-          .doc(answerId)
-          .collection("reactions")
-          .doc("wbzoxdkqfmehkppi")
-          .delete()
+        answer.collection("reactions").doc("wbzoxdkqfmehkppi").delete()
       )
     ).rejects.toThrow();
   });
