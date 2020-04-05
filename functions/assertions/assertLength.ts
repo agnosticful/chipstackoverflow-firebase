@@ -2,7 +2,7 @@ export default function assertLength<T extends string | Array<any>>(
   value: T,
   {
     minimumLength = 0,
-    maximumLength = Infinity
+    maximumLength = Infinity,
   }: {
     minimumLength?: number;
     maximumLength?: number;

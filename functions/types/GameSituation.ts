@@ -28,5 +28,5 @@ export default interface GameSituation {
 
 export enum GameType {
   cash = "CASH",
-  tournament = "TOURNAMENT"
+  tournament = "TOURNAMENT",
 }

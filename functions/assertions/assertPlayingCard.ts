@@ -24,7 +24,7 @@ const RANKS = [
   Rank.ten,
   Rank.jack,
   Rank.queen,
-  Rank.king
+  Rank.king,
 ];
 
 const SUITS = [Suit.spade, Suit.heart, Suit.diamond, Suit.club];

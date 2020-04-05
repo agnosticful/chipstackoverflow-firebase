@@ -16,12 +16,12 @@ export enum Rank {
   ten = 10,
   jack = 11,
   queen = 12,
-  king = 13
+  king = 13,
 }
 
 export enum Suit {
   spade = "SPADE",
   heart = "HEART",
   diamond = "DIAMOND",
-  club = "CLUB"
+  club = "CLUB",
 }
