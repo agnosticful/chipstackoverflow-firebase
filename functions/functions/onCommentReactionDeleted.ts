@@ -26,10 +26,7 @@ export default functions.firestore
           : { dislikes: firestore.FieldValue.increment(-1) }
       )
       .update(
-        app
-          .firestore()
-          .collection("posts")
-          .doc(params.postId),
+        app.firestore().collection("posts").doc(params.postId),
         type === "LIKE"
           ? { totalLikes: firestore.FieldValue.increment(-1) }
           : { totalDislikes: firestore.FieldValue.increment(-1) }

@@ -4,12 +4,12 @@ import { WrappedFunction } from "firebase-functions-test/lib/main";
 describe("onUserCreated()", () => {
   const app = {
     firestore: jest.fn(),
-    storage: jest.fn()
+    storage: jest.fn(),
   };
   const runTransaction = jest.fn();
   const transaction = {
     get: jest.fn(),
-    create: jest.fn()
+    create: jest.fn(),
   };
   const collection = jest.fn();
   const doc = jest.fn();
@@ -22,7 +22,7 @@ describe("onUserCreated()", () => {
   const nanoid = jest.fn();
   const nodeFetch = jest.fn();
   const response = {
-    buffer: jest.fn()
+    buffer: jest.fn(),
   };
   const originalImage = Symbol("ORIGINAL_IMAGE");
   const sanitizeUserProfileImage = jest.fn();
@@ -35,7 +35,7 @@ describe("onUserCreated()", () => {
     jest.mock("node-fetch", () => ({ default: nodeFetch }));
     jest.mock("../firebaseAdminApp", () => ({ default: app }));
     jest.mock("../utilities/sanitizeUserProfileImage", () => ({
-      default: sanitizeUserProfileImage
+      default: sanitizeUserProfileImage,
     }));
 
     const { default: onUserCreated } = await import("./onUserCreated");
@@ -46,7 +46,7 @@ describe("onUserCreated()", () => {
   beforeEach(() => {
     app.firestore.mockReturnValue({ runTransaction, collection });
     app.storage.mockReturnValue({ bucket });
-    runTransaction.mockImplementation(cb => cb(transaction));
+    runTransaction.mockImplementation((cb) => cb(transaction));
     transaction.get.mockResolvedValue({ exists: false });
     transaction.create.mockResolvedValue(undefined);
     collection.mockReturnValue({ doc });
@@ -85,7 +85,7 @@ describe("onUserCreated()", () => {
     await onUserCreatedFunc({
       uid: "loremipsum",
       displayName: "Kohei Asai",
-      photoURL
+      photoURL,
     });
 
     expect(nodeFetch).toHaveBeenCalledWith(photoURL);
@@ -94,8 +94,8 @@ describe("onUserCreated()", () => {
       sanitizedImage,
       expect.objectContaining({
         metadata: {
-          metadata: { firebaseStorageDownloadTokens: downloadToken }
-        }
+          metadata: { firebaseStorageDownloadTokens: downloadToken },
+        },
       })
     );
   });
@@ -106,7 +106,7 @@ describe("onUserCreated()", () => {
 
     await onUserCreatedFunc({
       uid: "loremipsum",
-      displayName: "Kohei Asai"
+      displayName: "Kohei Asai",
     });
 
     expect(download).toHaveBeenCalled();
@@ -123,12 +123,12 @@ describe("onUserCreated()", () => {
     await onUserCreatedFunc({
       uid: "loremipsum",
       displayName: name,
-      photoURL: "https://example.kohei.dev/example.png"
+      photoURL: "https://example.kohei.dev/example.png",
     });
 
     expect(transaction.create).toHaveBeenCalledWith(ref, {
       name,
-      profileImageURL: expect.stringContaining(downloadToken)
+      profileImageURL: expect.stringContaining(downloadToken),
     });
   });
 
@@ -139,7 +139,7 @@ describe("onUserCreated()", () => {
       onUserCreatedFunc({
         uid: "loremipsum",
         displayName: "Kohei Asai",
-        photoURL: "https://example.kohei.dev/example.png"
+        photoURL: "https://example.kohei.dev/example.png",
       })
     ).rejects.toThrow();
   });
@@ -151,7 +151,7 @@ describe("onUserCreated()", () => {
       onUserCreatedFunc({
         uid: "loremipsum",
         displayName: "Kohei Asai",
-        photoURL: "https://example.kohei.dev/example.png"
+        photoURL: "https://example.kohei.dev/example.png",
       })
     ).rejects.toThrow();
   });

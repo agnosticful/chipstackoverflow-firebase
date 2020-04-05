@@ -18,15 +18,15 @@ describe("createPost()", () => {
       null,
       {
         left: { rank: 4, suit: "SPADE" },
-        right: { rank: 11, suit: "DIAMOND" }
+        right: { rank: 11, suit: "DIAMOND" },
       },
       null,
       null,
       null,
       {
         left: { rank: 5, suit: "DIAMOND" },
-        right: { rank: 5, suit: "SPADE" }
-      }
+        right: { rank: 5, suit: "SPADE" },
+      },
     ],
     heroIndex: 5,
     preflop: {
@@ -36,30 +36,30 @@ describe("createPost()", () => {
         { playerIndex: 4, betSize: 0 },
         { playerIndex: 5, betSize: 2.2 },
         { playerIndex: 0, betSize: 0.5 },
-        { playerIndex: 1, betSize: 2.2 }
-      ]
+        { playerIndex: 1, betSize: 2.2 },
+      ],
     },
     flop: {
       communityCards: {
         left: { rank: 5, suit: "HEART" },
         center: { rank: 9, suit: "DIAMOND" },
-        right: { rank: 8, suit: "HEART" }
+        right: { rank: 8, suit: "HEART" },
       },
       actions: [
         { playerIndex: 1, betSize: 6 },
         { playerIndex: 5, betSize: 14.5 },
         { playerIndex: 1, betSize: 52.95 },
-        { playerIndex: 5, betSize: 52.95 }
-      ]
+        { playerIndex: 5, betSize: 52.95 },
+      ],
     },
     turn: {
       communityCard: { rank: 9, suit: "SPADE" },
-      actions: []
+      actions: [],
     },
     river: {
       communityCard: { rank: 7, suit: "HEART" },
-      actions: []
-    }
+      actions: [],
+    },
   };
 
   const test = createFirebaseFunctionsTest();
@@ -80,14 +80,14 @@ describe("createPost()", () => {
     jest.mock("firebase-admin", () => ({ firestore }));
 
     jest.mock("../assertions/assertGameSituation", () => ({
-      default: assertGameSituation
+      default: assertGameSituation,
     }));
     jest.mock("../assertions/assertObject", () => ({ default: assertObject }));
     jest.mock("../assertions/assertPostBody", () => ({
-      default: assertPostBody
+      default: assertPostBody,
     }));
     jest.mock("../assertions/assertPostTitle", () => ({
-      default: assertPostTitle
+      default: assertPostTitle,
     }));
     jest.mock("../firebaseAdminApp", () => ({ default: firebaseAdminApp }));
 

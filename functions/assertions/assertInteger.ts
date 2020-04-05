@@ -4,7 +4,7 @@ export default function assertInteger(
   value: number,
   { minimum, maximum }: { minimum: number; maximum: number } = {
     minimum: 0,
-    maximum: Infinity
+    maximum: Infinity,
   },
   name: string = "value"
 ): asserts value is number {

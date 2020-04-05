@@ -41,7 +41,7 @@ export default function assertGameSituation(
     preflop,
     flop,
     turn,
-    river
+    river,
   } = value;
 
   assertGameType(type, `${name}.type`);

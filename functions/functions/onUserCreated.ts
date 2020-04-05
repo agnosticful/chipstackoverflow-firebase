@@ -6,11 +6,8 @@ import app from "../firebaseAdminApp";
 
 const DISPLAY_NAME_FALLBACK = "noname";
 
-export default functions.auth.user().onCreate(async user => {
-  const userDoc = app
-    .firestore()
-    .collection("users")
-    .doc(user.uid);
+export default functions.auth.user().onCreate(async (user) => {
+  const userDoc = app.firestore().collection("users").doc(user.uid);
   const profileImageFile = app
     .storage()
     .bucket()
@@ -20,7 +17,7 @@ export default functions.auth.user().onCreate(async user => {
     .bucket()
     .file("fallbacks/user_profile_image.png");
 
-  await app.firestore().runTransaction(async transaction => {
+  await app.firestore().runTransaction(async (transaction) => {
     if ((await transaction.get(userDoc)).exists) {
       throw new Error(
         `tried to create a new user but user (uid=${user.uid}) is already exists.`
@@ -47,8 +44,8 @@ export default functions.auth.user().onCreate(async user => {
     await profileImageFile.save(buffer, {
       contentType: "image/png",
       metadata: {
-        metadata: { firebaseStorageDownloadTokens: downloadToken }
-      }
+        metadata: { firebaseStorageDownloadTokens: downloadToken },
+      },
     });
 
     await transaction.create(userDoc, {
@@ -59,7 +56,7 @@ export default functions.auth.user().onCreate(async user => {
         "/o/" +
         profileImageFile.id +
         "?alt=media&token=" +
-        downloadToken
+        downloadToken,
     });
   });
 });
