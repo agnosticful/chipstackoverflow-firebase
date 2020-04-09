@@ -1,13 +1,27 @@
-import GameStreetAction from "../types/GameStreetAction";
+import GameStreetAction, {
+  GameStreetActionType,
+} from "../types/GameStreetAction";
 import assertDouble from "./assertDouble";
-import assertInteger from "../assertions/assertInteger";
-import assertObject from "../assertions/assertObject";
+import assertInteger from "./assertInteger";
+import assertObject from "./assertObject";
+import assertOneOf from "./assertOneOf";
 
 export default function assertGameStreetAction(
   value: any,
   name: string = "value"
 ): asserts value is GameStreetAction {
-  assertObject<"playerIndex" | "betSize">(value, name);
+  assertObject<"type" | "playerIndex" | "betSize">(value, name);
+  assertOneOf(
+    value.type,
+    [
+      GameStreetActionType.fold,
+      GameStreetActionType.check,
+      GameStreetActionType.call,
+      GameStreetActionType.bet,
+      GameStreetActionType.raise,
+    ],
+    `${name}.type`
+  );
   assertInteger(
     value.playerIndex,
     { minimum: 0, maximum: 11 },
