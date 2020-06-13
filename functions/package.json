@@ -1,0 +1,30 @@
+{
+  "engines": {
+    "node": "10"
+  },
+  "main": "build/index.js",
+  "dependencies": {
+    "apollo-server-cloud-functions": "^2.14.3",
+    "apollo-server-core": "^2.14.3",
+    "dataloader": "^2.0.0",
+    "firebase-admin": "^8.12.1",
+    "firebase-functions": "^3.6.2",
+    "got": "^11.3.0",
+    "nanoid": "^3.1.9",
+    "sharp": "^0.25.4"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.13",
+    "@types/sharp": "^0.25.0",
+    "firebase-functions-test": "^0.2.1",
+    "firebase-tools": "^8.4.2",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.5"
+  },
+  "scripts": {
+    "format": "prettier --write '**/*'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p . --outDir build",
+    "dev": "cd .. && firebase emulators:start --only functions"
+  }
+}

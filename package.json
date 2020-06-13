@@ -1,53 +1,17 @@
 {
-  "private": true,
-  "name": "chipstackoverflow",
+  "name": "chipstackoverflow-firebase",
   "version": "0.0.0",
-  "description": "Undefined yet.",
-  "author": "Kohei Asai <yo@kohei.dev> (https://www.kohei.dev/)",
-  "contributors": [
-    "Kohei Asai <yo@kohei.dev> (https://www.kohei.dev/)",
-    "Ryo Togashi <ryo.togashi.ca@gmail.com> (https://ryotogashi.com/)"
-  ],
-  "dependencies": {
-    "firebase-admin": "^8.9.2",
-    "firebase-functions": "^3.3.0",
-    "nanoid": "^2.1.11",
-    "node-fetch": "^2.6.0",
-    "sharp": "^0.24.1"
-  },
+  "description": "",
   "devDependencies": {
-    "@firebase/testing": "^0.16.13",
-    "@types/faker": "^4.1.10",
-    "@types/jest": "^25.1.3",
-    "@types/nanoid": "^2.1.0",
-    "@types/node-fetch": "^2.5.5",
-    "@types/sharp": "^0.24.0",
-    "faker": "^4.1.0",
-    "firebase-functions-test": "^0.2.0",
-    "firebase-tools": "^7.14.0",
-    "jest": "^25.1.0",
-    "jest-dev-server": "^4.4.0",
-    "prettier": "^2.0.2",
-    "ts-jest": "^25.2.1",
-    "typescript": "^3.8.3"
+    "firebase-tools": "^8.4.2"
   },
   "scripts": {
-    "format": "prettier --write './functions/**/*'",
-    "test": "jest",
-    "build": "tsc -p functions --outDir .functions",
-    "serve": "firebase emulators:start --only functions,firestore",
-    "shell": "firebase functions:shell",
-    "logs": "firebase functions:log"
+    "format": "cd functions && npm run format",
+    "test": "cd functions && npm run test",
+    "build": "cd functions && npm run build",
+    "dev": "npm run build && firebase emulators:start --only firestore,functions,hosting --import=./emulator-snapshot"
   },
-  "engines": {
-    "node": "10"
-  },
-  "homepage": "https://github.com/agnosticful/chipstackoverflow-firebase#readme",
-  "bugs": {
-    "url": "https://github.com/agnosticful/chipstackoverflow-firebase/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/agnosticful/chipstackoverflow-firebase.git"
-  }
+  "author": "Kohei Asai <yo@kohei.dev> (https://kohei.dev/)",
+  "license": "MIT",
+  "dependencies": {}
 }
