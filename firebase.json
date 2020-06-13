@@ -1,13 +1,13 @@
 {
   "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
+    "rules": "firestore/firestore.rules",
+    "indexes": "firestore/firestore.indexes.json"
   },
   "functions": {
-    "source": "./"
+    "source": "functions"
   },
   "storage": {
-    "rules": "storage.rules"
+    "rules": "storage/storage.rules"
   },
   "emulators": {
     "functions": {
@@ -15,6 +15,30 @@
     },
     "firestore": {
       "port": 8080
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
     }
+  },
+  "hosting": {
+    "public": "hosting/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/graphql",
+        "function": "graphql"
+      }
+    ]
   }
 }

@@ -1,9 +1,0 @@
-// DO NOT MODIFY THESE ON FIREBASE'S DASHBOARD.
-// THESE RULES ARE CONTROLLED BY FILES IN A GIT REPOSITORY.
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read;
-    }
-  }
-}

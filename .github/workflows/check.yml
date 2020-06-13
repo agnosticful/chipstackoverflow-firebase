@@ -1,0 +1,32 @@
+name: Check
+on:
+  push:
+    branches:
+      - "*"
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+      - run: npm ci
+      - run: |
+        cd functions
+        npx --no-install prettier --check '**/*'
+        cd ..
+  dry-build:
+    name: Dry Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+      - run: npm ci
+      - run: |
+        cd functions
+        npm run build
+        cd ..
