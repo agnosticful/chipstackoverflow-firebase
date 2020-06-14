@@ -52,7 +52,7 @@ export default functions.auth.user().onCreate(async (user) => {
     .doc(user.uid)
     .create({
       name: user.displayName ?? "No Name",
-      profileImageURL:
+      imageURL:
         "https://firebasestorage.googleapis.com/v0/b/" +
         admin.app().storage().bucket("chipstackoverflow-user-profile-images")
           .id +
