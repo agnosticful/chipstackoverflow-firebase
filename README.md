@@ -16,7 +16,7 @@ npm run dev
 
 ## System Architecture
 
-[image]
+![](https://user-images.githubusercontent.com/4289883/84722320-bbf9e500-af37-11ea-9981-4a3f86a4cc59.png)
 
 We're using 5 Firebase products:
 
