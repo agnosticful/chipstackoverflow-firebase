@@ -11,8 +11,4 @@ export default new ApolloServer({
   playground: {
     endpoint: "/graphql",
   },
-  // tracing: true,
-  engine: {
-    apiKey: "service:chipstackoverflow:f6tO9MtFz4OR-jwpEICpeg",
-  },
 });
