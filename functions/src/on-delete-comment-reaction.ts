@@ -11,7 +11,7 @@ export default functions.firestore
   .onDelete(async (snapshot) => {
     const commentReference = snapshot.ref.parent.parent!;
     const answerReference = commentReference.parent.parent!;
-    const postReference = answerReference.parent.parent!.parent.parent!;
+    const postReference = answerReference.parent.parent!;
     const reaction = deserializeCommentReaction(
       snapshot as firestore.DocumentSnapshot<FirestoreCommentReaction>
     );
