@@ -1,7 +1,11 @@
 {
   "name": "chipstackoverflow-firebase",
   "version": "0.0.0",
-  "description": "",
+  "description": "Undefined yet.",
+  "author": "Kohei Asai <yo@kohei.dev> (https://www.kohei.dev/)",
+  "contributors": [
+    "Kohei Asai <yo@kohei.dev> (https://www.kohei.dev/)"
+  ],
   "devDependencies": {
     "firebase-tools": "^8.4.2"
   },
@@ -12,7 +16,12 @@
     "build": "cd functions && npm run build",
     "dev": "npm run build && firebase emulators:start --only firestore,functions,hosting --import=./emulator-snapshot"
   },
-  "author": "Kohei Asai <yo@kohei.dev> (https://kohei.dev/)",
-  "license": "MIT",
-  "dependencies": {}
+  "homepage": "https://github.com/agnosticful/chipstackoverflow-firebase#readme",
+  "bugs": {
+    "url": "https://github.com/agnosticful/chipstackoverflow-firebase/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agnosticful/chipstackoverflow-firebase.git"
+  }
 }
