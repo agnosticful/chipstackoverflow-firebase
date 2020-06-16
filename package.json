@@ -6,6 +6,7 @@
     "firebase-tools": "^8.4.2"
   },
   "scripts": {
+    "postinstall": "cd functions && npm install",
     "format": "cd functions && npm run format",
     "test": "cd functions && npm run test",
     "build": "cd functions && npm run build",
