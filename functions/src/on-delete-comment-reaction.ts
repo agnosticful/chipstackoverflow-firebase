@@ -8,7 +8,7 @@ export default functions.firestore
   .document(
     "posts/{postId}/answers/{answerId}/comments/{commentId}/reactions/{reactionId}"
   )
-  .onCreate(async (snapshot) => {
+  .onDelete(async (snapshot) => {
     const commentReference = snapshot.ref.parent.parent!;
     const answerReference = commentReference.parent.parent!;
     const postReference = answerReference.parent.parent!.parent.parent!;
