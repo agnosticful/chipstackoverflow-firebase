@@ -8,11 +8,15 @@ export default async (
   _: any,
   { postId }: { postId: string },
   __: Context
-): Promise<Post> => {
+): Promise<Post | null> => {
   const snapshot = (await firestore()
     .collection("posts")
     .doc(postId)
     .get()) as firestore.DocumentSnapshot<FirestorePost>;
+
+  if (!snapshot.exists) {
+    return null;
+  }
 
   return deserializePost(snapshot);
 };
