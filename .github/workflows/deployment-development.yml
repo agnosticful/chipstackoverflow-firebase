@@ -1,0 +1,107 @@
+name: Deployment (Development)
+on:
+  release:
+    types: [published, unpublished]
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Latest Release
+        uses: actions/github-script@v2
+        id: find-latest-release
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { data: releases } = await github.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            const release = releases.find(release => release.published_at);
+
+            core.setOutput('ref', release.tag_name);
+            core.setOutput('tag-name', release.tag_name);
+      - name: Echo
+        run: echo ${{steps.find-latest-release.outputs.ref}}
+      - name: Create GitHub Deployment
+        uses: actions/github-script@v2
+        id: create-deployment
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          debug: true
+          script: |
+            const { data: deployment, ...response } = await github.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: '${{steps.find-latest-release.outputs.ref}}',
+              environment: 'development',
+              description: '${{steps.find-latest-release.outputs.tag-name}}',
+              production_environment: false,
+            });
+
+            core.setOutput('deployment-id', deployment.id);
+
+            await github.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref,
+              deployment_id: deployment.id,
+              state: 'in_progress',
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
+              environment_url: 'https://api.csof.dev/',
+              mediaType: {
+                previews: ["flash"],
+              },
+            });
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          ref: ${{steps.find-latest-release.outputs.ref}}
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Deploy
+        run: npx firebase deploy --only firestore,storage,functions,hosting --message "${{steps.find-latest-release.outputs.tag-name}}" --token ${{secrets.FIREBASE_TOKEN}}
+      - name: Update GitHub Deployment Status (Success)
+        if: ${{success()}}
+        uses: actions/github-script@v2
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            await github.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref,
+              deployment_id: '${{steps.create-deployment.outputs.deployment-id}}',
+              state: 'success',
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
+              environment_url: 'https://api.csof.dev/',
+              mediaType: {
+                previews: ["flash"],
+              },
+            });
+      - name: Update GitHub Deployment Status (Failure)
+        if: ${{failure()}}
+        uses: actions/github-script@v2
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            await github.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref,
+              deployment_id: '${{steps.create-deployment.outputs.deployment-id}}',
+              state: 'failure',
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
+              environment_url: 'https://api.csof.dev/',
+              mediaType: {
+                previews: ["flash"],
+              },
+            });        
