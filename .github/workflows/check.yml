@@ -8,25 +8,33 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Node
+        uses: actions/setup-node@v1
         with:
           node-version: "10.x"
-      - run: npm ci
-      - run: |
-        cd functions
-        npx --no-install prettier --check '**/*'
-        cd ..
-  dry-build:
+      - name: Install Dependencies
+        run: npm ci
+      - name: Lint
+        run: |
+          cd functions
+          npx --no-install prettier --check '**/*'
+          cd ..
+  build:
     name: Dry Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Node
+        uses: actions/setup-node@v1
         with:
           node-version: "10.x"
-      - run: npm ci
-      - run: |
-        cd functions
-        npm run build
-        cd ..
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build
+        run: |
+          cd functions
+          npm run build
+          cd ..
